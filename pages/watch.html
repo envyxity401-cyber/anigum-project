@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Watch - AniGum</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cfc'/><text x='16' y='23' text-anchor='middle' fill='white' font-size='18' font-family='sans-serif' font-weight='bold'>A</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#09090f;--bg2:#0e0e18;--bg3:#13131f;--card:#111120;--card2:#181828;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--accent:#7c5cfc;--accent-dark:#6344e0;--accent-dim:rgba(124,92,252,0.14);--text:#ededf5;--text2:#9090b0;--text3:#55556a;--font:'DM Sans',sans-serif;--font-head:'Syne',sans-serif;--radius:10px;--nav-h:62px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}a{text-decoration:none;color:inherit}img{display:block}button{cursor:pointer;font-family:var(--font)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:rgba(9,9,15,0.88);backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1360px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:16px;font-weight:800;color:white}
+.logo-name{font-family:var(--font-head);font-size:18px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#f472b6,#2dd4bf,#a78bfa);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradMove 5s ease infinite}
+@keyframes gradMove{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.nav-links{display:flex;gap:2px;list-style:none}
+.nav-links a{padding:6px 13px;border-radius:7px;font-size:13px;font-weight:500;color:var(--text2);transition:all 0.2s}
+.nav-links a:hover{color:var(--text);background:var(--card)}
+.nav-search{margin-left:auto;display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:9px;overflow:visible;width:240px;transition:border-color 0.2s;position:relative}
+.nav-search:focus-within{border-color:var(--accent)}
+.nav-search input{background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:13px;padding:9px 12px;width:100%}
+.nav-search input::placeholder{color:var(--text3)}
+.nav-search button{background:none;border:none;color:var(--text2);padding:9px 10px;display:flex;align-items:center;transition:color 0.2s;flex-shrink:0}
+.nav-search button:hover{color:var(--accent)}
+.hamburger{display:none;background:none;border:none;color:var(--text);font-size:22px;padding:4px;flex-shrink:0}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;z-index:999;flex-direction:column;gap:4px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;color:var(--text2);transition:all 0.2s}
+.mobile-menu a:hover{color:var(--text);background:var(--card)}
+
+/* watch layout */
+.watch-wrap{max-width:1360px;margin:0 auto;padding:calc(var(--nav-h) + 16px) 20px 40px;display:grid;grid-template-columns:1fr 340px;gap:20px;animation:fadeIn 0.4s ease}
+.player-area{width:100%;min-width:0}
+.player-box{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 16px 48px rgba(0,0,0,0.6)}
+.player-box iframe{width:100%;height:100%;border:none}
+.player-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,var(--bg),var(--card));color:var(--text2);font-size:14px}
+.player-placeholder svg{opacity:0.25}
+/* controls */
+.player-controls{display:flex;align-items:center;justify-content:space-between;padding:12px 0;gap:12px;flex-wrap:wrap;animation:fadeUp 0.4s ease 0.1s both}
+.ep-nav{display:flex;gap:8px;align-items:center}
+.ep-nav button{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;transition:all 0.2s}
+.ep-nav button:hover{color:var(--text);border-color:var(--accent)}
+.ep-nav button:disabled{opacity:0.3;cursor:not-allowed}
+.ep-label{font-size:14px;font-weight:600;font-family:var(--font-head)}
+.servers{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.servers span{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0}
+.server-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:7px;font-size:11px;font-weight:600;transition:all 0.2s}
+.server-btn:hover{color:var(--text);border-color:var(--accent)}
+.server-btn.on{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 4px 12px rgba(124,92,252,0.3)}
+/* anime info strip */
+.anime-info{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:14px;display:flex;gap:16px;animation:fadeUp 0.4s ease 0.2s both}
+.info-poster{width:96px;height:136px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--card2)}
+.info-poster img{width:100%;height:100%;object-fit:cover}
+.info-body{flex:1;min-width:0}
+.info-title{font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:6px}
+.info-desc{font-size:12px;color:var(--text2);line-height:1.65;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.info-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.info-tag{background:var(--bg2);padding:3px 10px;border-radius:5px;font-size:10px;color:var(--text2);font-weight:500;border:1px solid var(--border)}
+/* sidebar */
+.sidebar{display:flex;flex-direction:column;gap:16px;animation:fadeUp 0.4s ease 0.15s both}
+.ep-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;max-height:500px}
+.ep-panel-head{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg3)}
+.ep-panel-title{font-family:var(--font-head);font-size:13px;font-weight:700}
+.ep-count{font-size:11px;color:var(--text3)}
+.ep-search-wrap{padding:8px 10px;border-bottom:1px solid var(--border)}
+.ep-search{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;transition:border-color 0.2s}
+.ep-search:focus{border-color:var(--accent)}
+.ep-list{flex:1;overflow-y:auto;padding:6px}
+.ep-list::-webkit-scrollbar{width:4px}
+.ep-list::-webkit-scrollbar-thumb{background:var(--text3);border-radius:4px}
+.ep-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:background 0.15s;font-size:12px}
+.ep-item:hover{background:var(--bg3)}
+.ep-item.active{background:var(--accent-dim);color:var(--accent)}
+.ep-num{font-weight:700;min-width:28px;text-align:center;font-size:11px}
+.ep-name{flex:1;font-weight:500;color:var(--text2)}
+.ep-item.active .ep-name{color:var(--accent)}
+/* related panel */
+.related-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.related-head{padding:12px 14px;border-bottom:1px solid var(--border);font-family:var(--font-head);font-size:13px;font-weight:700;background:var(--bg3)}
+.related-list{padding:6px;max-height:320px;overflow-y:auto}
+.related-list::-webkit-scrollbar{width:4px}
+.related-list::-webkit-scrollbar-thumb{background:var(--text3);border-radius:4px}
+.related-item{display:flex;gap:10px;padding:8px;border-radius:8px;cursor:pointer;transition:background 0.15s;text-decoration:none;color:inherit}
+.related-item:hover{background:var(--bg3)}
+.related-thumb{width:46px;height:62px;border-radius:6px;overflow:hidden;flex-shrink:0;background:var(--card2)}
+.related-thumb img{width:100%;height:100%;object-fit:cover}
+.related-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.related-title{font-size:11px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.related-meta{font-size:10px;color:var(--text3);margin-top:3px}
+.footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px;margin-top:20px}
+.footer p{max-width:1360px;margin:0 auto;text-align:center;font-size:11px;color:var(--text3)}
+@media(max-width:900px){.watch-wrap{grid-template-columns:1fr}.nav-links{display:none}.hamburger{display:block}.sidebar{order:2}}
+@media(max-width:600px){.nav-search{width:150px}.anime-info{flex-direction:column}.player-controls{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <div class="logo-mark">A</div>
+      <span class="logo-name">AniGum</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">home</a></li>
+      <li><a href="series.html">tv series</a></li>
+      <li><a href="movies.html">movies</a></li>
+      <li><a href="popular.html">most popular</a></li>
+      <li><a href="airing.html">airing</a></li>
+    </ul>
+    <div class="nav-search">
+      <input type="text" id="searchInput" placeholder="search anime..." autocomplete="off">
+      <button onclick="doSearch()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../index.html">home</a>
+  <a href="series.html">tv series</a>
+  <a href="movies.html">movies</a>
+  <a href="popular.html">most popular</a>
+  <a href="airing.html">airing</a>
+</div>
+
+<div class="watch-wrap">
+  <div class="player-area">
+    <div class="player-box" id="playerBox">
+      <div class="player-placeholder" id="playerPlaceholder">
+        <svg width="52" height="52" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        loading player...
+      </div>
+    </div>
+    <div class="player-controls">
+      <div class="ep-nav">
+        <button id="prevBtn" onclick="changeEp(currentEp-1)" disabled>← prev</button>
+        <span class="ep-label" id="epLabel">episode 1</span>
+        <button id="nextBtn" onclick="changeEp(currentEp+1)">next →</button>
+      </div>
+      <div class="servers">
+        <span>server</span>
+        <button class="server-btn on" onclick="switchServer('videasy',this)">videasy</button>
+        <button class="server-btn" onclick="switchServer('vidsrc2',this)">vidsrc v2</button>
+        <button class="server-btn" onclick="switchServer('vidsrc3',this)">vidsrc v3</button>
+        <button class="server-btn" onclick="switchServer('vidsrcpro',this)">vidsrc pro</button>
+        <button class="server-btn" onclick="switchServer('vidlink',this)">vidlink</button>
+        <button class="server-btn" onclick="switchServer('embed',this)">embed.su</button>
+      </div>
+    </div>
+    <div class="anime-info">
+      <div class="info-poster"><img id="infoPoster" src="" alt=""></div>
+      <div class="info-body">
+        <div class="info-title" id="infoTitle">loading...</div>
+        <div class="info-desc" id="infoDesc"></div>
+        <div class="info-tags" id="infoTags"></div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="ep-panel">
+      <div class="ep-panel-head">
+        <span class="ep-panel-title">episodes</span>
+        <span class="ep-count" id="epCount"></span>
+      </div>
+      <div class="ep-search-wrap">
+        <input class="ep-search" type="text" id="epSearch" placeholder="jump to episode..." oninput="filterEps()">
+      </div>
+      <div class="ep-list" id="epList"></div>
+    </div>
+    <div class="related-panel">
+      <div class="related-head">you might also like</div>
+      <div class="related-list" id="relatedList"></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer"><p>© 2026 anigum · all rights reserved · this site does not store any files on its servers</p></footer>
+
+<script>
+var currentEp = 1, currentServer = 'videasy', animeId = null, totalEps = 0
+// anilist id is what videasy, vidsrc, vidlink, embed.su all use
+// mal id is what jikan gives us - they are DIFFERENT numbers
+// witch hat atelier: mal=51553, anilist=118123 — passing mal id to videasy = "anime not found"
+var anilistId = null
+
+function doSearch() { var q = document.getElementById('searchInput'); if (q && q.value.trim()) window.location.href = 'search.html?q=' + encodeURIComponent(q.value.trim()) }
+document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch() })
+function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open') }
+
+function getParams() {
+  var p = new URLSearchParams(window.location.search)
+  animeId = p.get('id')
+  currentEp = parseInt(p.get('ep')) || 1
+}
+
+// fetch anilist id from jikan external links — jikan returns all external ids including anilist
+function fetchAnilistId() {
+  return fetch('https://api.jikan.moe/v4/anime/' + animeId + '/external')
+    .then(function(r) { return r.json() })
+    .then(function(d) {
+      var links = d.data || []
+      var al = links.find(function(l) { return l.name && l.name.toLowerCase().includes('anilist') })
+      if (al && al.url) {
+        // url is like https://anilist.co/anime/118123
+        var match = al.url.match(/anilist\.co\/anime\/(\d+)/)
+        if (match) { anilistId = match[1]; return }
+      }
+      // fallback: query anilist graphql directly with the mal id
+      return fetch('https://graphql.anilist.co', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: 'query($malId:Int){Media(idMal:$malId,type:ANIME){id}}',
+          variables: { malId: parseInt(animeId) }
+        })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(d) {
+        if (d.data && d.data.Media) anilistId = String(d.data.Media.id)
+      })
+      .catch(function() {})
+    })
+    .catch(function() {
+      // if external fetch fails try anilist directly
+      return fetch('https://graphql.anilist.co', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: 'query($malId:Int){Media(idMal:$malId,type:ANIME){id}}',
+          variables: { malId: parseInt(animeId) }
+        })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(d) {
+        if (d.data && d.data.Media) anilistId = String(d.data.Media.id)
+      })
+      .catch(function() {})
+    })
+}
+
+// server id logic:
+// videasy  -> anilist id
+// vidsrc2  -> anilist id
+// vidsrc3  -> anilist id
+// vidsrcpro -> mal id (it accepts mal)
+// vidlink  -> anilist id
+// embed.su -> anilist id
+function buildUrl() {
+  if (!animeId) return ''
+  var aid = anilistId || animeId  // use anilist if we have it, mal as last resort
+  var mal = animeId
+  if (currentServer === 'videasy') return 'https://player.videasy.net/anime/' + aid + '/' + currentEp
+  if (currentServer === 'vidsrc2') return 'https://vidsrc.cc/v2/embed/anime/' + aid + '/' + currentEp + '/sub'
+  if (currentServer === 'vidsrc3') return 'https://vidsrc.cc/v3/embed/anime/' + aid + '/' + currentEp + '/sub'
+  if (currentServer === 'vidsrcpro') return 'https://vidsrc.pro/embed/anime/' + mal + '/' + currentEp + '/sub'
+  if (currentServer === 'vidlink') return 'https://vidlink.pro/anime/' + aid + '/' + currentEp + '/sub'
+  if (currentServer === 'embed') return 'https://embed.su/embed/anime/' + aid + '/' + currentEp
+  return 'https://player.videasy.net/anime/' + aid + '/' + currentEp
+}
+
+function loadPlayer() {
+  var box = document.getElementById('playerBox')
+  var ph = document.getElementById('playerPlaceholder')
+  if (ph) ph.remove()
+  var old = box.querySelector('iframe')
+  if (old) old.remove()
+  var src = buildUrl()
+  if (!src) return
+  var f = document.createElement('iframe')
+  f.src = src
+  f.allowFullscreen = true
+  f.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media'
+  f.setAttribute('scrolling', 'no')
+  // referrer policy set to origin so the server sees our domain in referer
+  f.referrerPolicy = 'origin'
+  f.style.cssText = 'width:100%;height:100%;border:none'
+  box.appendChild(f)
+}
+
+function updateNav() {
+  document.getElementById('epLabel').textContent = 'episode ' + currentEp
+  document.getElementById('prevBtn').disabled = currentEp <= 1
+  document.getElementById('nextBtn').disabled = currentEp >= totalEps
+  var url = new URL(window.location.href)
+  url.searchParams.set('ep', currentEp)
+  window.history.replaceState(null, '', url)
+  document.querySelectorAll('.ep-item').forEach(function(item) {
+    item.classList.toggle('active', parseInt(item.dataset.ep) === currentEp)
+    if (parseInt(item.dataset.ep) === currentEp) item.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  })
+}
+
+function changeEp(ep) {
+  if (ep < 1 || ep > totalEps) return
+  currentEp = ep
+  updateNav()
+  loadPlayer()
+}
+
+function switchServer(s, btn) {
+  currentServer = s
+  document.querySelectorAll('.server-btn').forEach(function(b) { b.classList.remove('on') })
+  btn.classList.add('on')
+  // if anilist id not yet fetched (edge case), wait for it then load
+  if (!anilistId && s !== 'vidsrcpro') {
+    btn.textContent = 'loading...'
+    fetchAnilistId().then(function() {
+      btn.textContent = s
+      loadPlayer()
+    })
+  } else {
+    loadPlayer()
+  }
+}
+
+function buildEpList() {
+  var el = document.getElementById('epList'), h = ''
+  var count = Math.min(totalEps, 2000)
+  for (var i = 1; i <= count; i++) {
+    h += '<div class="ep-item' + (i === currentEp ? ' active' : '') + '" data-ep="' + i + '" onclick="changeEp(' + i + ')">'
+    + '<span class="ep-num">' + String(i).padStart(2, '0') + '</span>'
+    + '<span class="ep-name">episode ' + i + '</span></div>'
+  }
+  el.innerHTML = h
+  document.getElementById('epCount').textContent = count + ' eps'
+  setTimeout(function() { var a = el.querySelector('.active'); if (a) a.scrollIntoView({ block: 'center' }) }, 100)
+}
+
+function filterEps() {
+  var q = document.getElementById('epSearch').value.trim()
+  document.querySelectorAll('.ep-item').forEach(function(item) {
+    item.style.display = (!q || item.dataset.ep.includes(q)) ? '' : 'none'
+  })
+}
+
+function loadInfo() {
+  // step 1: fetch anime info from jikan
+  fetch('https://api.jikan.moe/v4/anime/' + animeId)
+    .then(function(r) { return r.json() })
+    .then(function(d) {
+      var a = d.data
+      if (!a) throw new Error('no data')
+      document.title = (a.title_english || a.title) + ' - AniGum'
+      document.getElementById('infoTitle').textContent = a.title_english || a.title
+      document.getElementById('infoDesc').textContent = (a.synopsis || 'no description available').replace(/\[Written by.*?\]/g, '').trim()
+      document.getElementById('infoPoster').src = a.images.webp ? a.images.webp.image_url : a.images.jpg.image_url
+      totalEps = a.episodes || (a.status === 'Currently Airing' ? 500 : 24)
+      var tags = []
+      if (a.genres) a.genres.forEach(function(g) { tags.push(g.name) })
+      if (a.year) tags.push(String(a.year))
+      if (a.score) tags.push('★ ' + a.score)
+      if (a.status) tags.push(a.status.toLowerCase())
+      if (a.rating) tags.push(a.rating.split(' - ')[0])
+      // show mal id in tags for debugging - will show anilist id once resolved
+      tags.push('mal: ' + animeId)
+      document.getElementById('infoTags').innerHTML = tags.map(function(t) { return '<span class="info-tag">' + t + '</span>' }).join('')
+      buildEpList()
+      updateNav()
+
+      // step 2: fetch anilist id THEN load player
+      // this is the critical fix - all embed providers use anilist ids not mal ids
+      fetchAnilistId().then(function() {
+        // update tag to show which id is being used
+        var tagsEl = document.getElementById('infoTags')
+        if (anilistId) {
+          // replace mal tag with anilist tag so user can verify
+          tagsEl.innerHTML = tagsEl.innerHTML.replace(
+            '<span class="info-tag">mal: ' + animeId + '</span>',
+            '<span class="info-tag" style="color:#4ade80;border-color:rgba(74,222,128,0.3)">anilist: ' + anilistId + '</span>'
+          )
+        } else {
+          // no anilist id found - warn user some servers may not work
+          tagsEl.innerHTML = tagsEl.innerHTML.replace(
+            '<span class="info-tag">mal: ' + animeId + '</span>',
+            '<span class="info-tag" style="color:#fb923c;border-color:rgba(251,146,60,0.3)">mal only: ' + animeId + ' (some servers may fail)</span>'
+          )
+        }
+        loadPlayer()
+      })
+    })
+    .catch(function() {
+      // info fetch failed - still try to get anilist id and load player
+      totalEps = 500
+      buildEpList()
+      updateNav()
+      fetchAnilistId().then(function() { loadPlayer() })
+    })
+}
+
+function loadRelated() {
+  // fetch top airing and show a few - no popularity filter so new anime appear
+  fetch('https://api.jikan.moe/v4/top/anime?limit=25&filter=airing&sfw=true')
+    .then(function(r) { return r.json() })
+    .then(function(d) {
+      var list = (d.data || []).filter(function(a) { return String(a.mal_id) !== String(animeId) }).slice(0, 8)
+      document.getElementById('relatedList').innerHTML = list.map(function(a) {
+        var img = a.images.webp ? a.images.webp.image_url : a.images.jpg.image_url
+        return '<a class="related-item" href="watch.html?id=' + a.mal_id + '">'
+        + '<div class="related-thumb"><img src="' + img + '" loading="lazy" alt=""></div>'
+        + '<div class="related-info">'
+        + '<div class="related-title">' + (a.title_english || a.title) + '</div>'
+        + '<div class="related-meta">' + (a.episodes || '?') + 'ep · ' + (a.genres && a.genres.length ? a.genres[0].name : '') + '</div>'
+        + '</div></a>'
+      }).join('')
+    })
+    .catch(function() {})
+}
+
+getParams()
+if (animeId) { loadInfo(); setTimeout(loadRelated, 1200) }
+</script>
+<script src="../shared.js"></script>
+</body>
+</html>
